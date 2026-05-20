@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HomeGreen — Your Home & Garden Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-50: #E1F5EE;
+    --green-100: #9FE1CB;
+    --green-400: #1D9E75;
+    --green-600: #0F6E56;
+    --green-800: #085041;
+    --amber-50: #FAEEDA;
+    --amber-600: #854F0B;
+    --blue-50: #E6F1FB;
+    --blue-600: #185FA5;
+    --coral-50: #FAECE7;
+    --coral-600: #993C1D;
+    --gray-50: #F7F6F2;
+    --gray-100: #EDEDEA;
+    --gray-200: #D8D7D2;
+    --gray-600: #5F5E5A;
+    --gray-900: #1A1A18;
+    --font-heading: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--gray-50);
+    color: var(--gray-900);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    background: #fff;
+    border-bottom: 1px solid var(--gray-100);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 34px; height: 34px;
+    background: var(--green-400);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark svg { width: 18px; height: 18px; fill: #fff; }
+  .logo-name { font-family: var(--font-heading); font-size: 18px; color: var(--gray-900); }
+  .logo-tag { font-size: 11px; color: var(--gray-600); margin-top: -2px; }
+  .nav { display: flex; gap: 2px; }
+  .nav-btn {
+    padding: 7px 14px;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { background: var(--gray-50); color: var(--gray-900); }
+  .nav-btn.active { background: var(--green-50); color: var(--green-600); font-weight: 500; }
+
+  /* LAYOUT */
+  .app-body { display: flex; flex: 1; overflow: hidden; max-height: calc(100vh - 60px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 210px;
+    background: #fff;
+    border-right: 1px solid var(--gray-100);
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .sidebar-section { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-600); padding: 12px 10px 4px; }
+  .sidebar-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--gray-600);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: var(--font-body);
+  }
+  .sidebar-link:hover { background: var(--gray-50); color: var(--gray-900); }
+  .sidebar-link.active { background: var(--green-50); color: var(--green-600); border-color: var(--green-100); font-weight: 500; }
+  .sidebar-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* MAIN CONTENT */
+  .main-content { flex: 1; overflow-y: auto; padding: 28px 28px 0; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .page-header { margin-bottom: 24px; }
+  .page-title { font-family: var(--font-heading); font-size: 26px; color: var(--gray-900); margin-bottom: 4px; }
+  .page-sub { font-size: 14px; color: var(--gray-600); }
+
+  /* STAT CARDS */
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat-card { background: #fff; border: 1px solid var(--gray-100); border-radius: var(--radius-md); padding: 16px; }
+  .stat-label { font-size: 12px; color: var(--gray-600); margin-bottom: 6px; }
+  .stat-value { font-size: 26px; font-weight: 600; color: var(--gray-900); font-family: var(--font-heading); }
+  .stat-value.green { color: var(--green-400); }
+
+  /* CHECKLIST */
+  .card { background: #fff; border: 1px solid var(--gray-100); border-radius: var(--radius-md); padding: 20px; margin-bottom: 20px; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .card-title { font-size: 15px; font-weight: 500; color: var(--gray-900); }
+  .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: var(--green-50); color: var(--green-600); font-weight: 500; }
+  .check-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--gray-100); }
+  .check-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .check-box {
+    width: 20px; height: 20px; border-radius: 5px;
+    border: 1.5px solid var(--gray-200);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0; transition: all 0.15s;
+  }
+  .check-box:hover { border-color: var(--green-400); }
+  .check-box.done { background: var(--green-400); border-color: var(--green-400); }
+  .check-box.done::after { content: ''; width: 10px; height: 6px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg) translateY(-1px); display: block; }
+  .check-label { font-size: 14px; color: var(--gray-900); transition: all 0.15s; }
+  .check-label.done { text-decoration: line-through; color: var(--gray-600); }
+
+  /* TIP CARDS */
+  .tips-title { font-size: 15px; font-weight: 500; color: var(--gray-900); margin-bottom: 14px; }
+  .tip-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .tip-card {
+    background: #fff; border: 1px solid var(--gray-100); border-radius: var(--radius-md);
+    padding: 16px; cursor: pointer; transition: all 0.18s;
+  }
+  .tip-card:hover { border-color: var(--green-100); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(29,158,117,0.08); }
+  .tip-icon {
+    width: 38px; height: 38px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
+  }
+  .tip-icon svg { width: 20px; height: 20px; }
+  .tip-icon.green { background: var(--green-50); }
+  .tip-icon.green svg { stroke: var(--green-600); }
+  .tip-icon.amber { background: var(--amber-50); }
+  .tip-icon.amber svg { stroke: var(--amber-600); }
+  .tip-icon.blue { background: var(--blue-50); }
+  .tip-icon.blue svg { stroke: var(--blue-600); }
+  .tip-icon.coral { background: var(--coral-50); }
+  .tip-icon.coral svg { stroke: var(--coral-600); }
+  .tip-name { font-size: 13px; font-weight: 500; color: var(--gray-900); margin-bottom: 4px; }
+  .tip-desc { font-size: 12px; color: var(--gray-600); line-height: 1.5; }
+
+  /* CHAT PANEL */
+  .chat-wrap {
+    background: #fff;
+    border-top: 1px solid var(--gray-100);
+    display: flex;
+    flex-direction: column;
+    height: 280px;
+    flex-shrink: 0;
+  }
+  .chat-head {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chat-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-400); }
+  .chat-head-title { font-size: 13px; font-weight: 500; color: var(--gray-900); }
+  .chat-head-sub { font-size: 12px; color: var(--gray-600); margin-left: auto; }
+  .chat-msgs { flex: 1; overflow-y: auto; padding: 14px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { display: flex; gap: 10px; align-items: flex-end; }
+  .msg.user { flex-direction: row-reverse; }
+  .msg-av {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0;
+  }
+  .msg-av.ai { background: var(--green-50); color: var(--green-600); }
+  .msg-av.user { background: var(--blue-50); color: var(--blue-600); }
+  .msg-bubble {
+    max-width: 70%; padding: 9px 14px;
+    font-size: 13px; line-height: 1.55; border-radius: 14px;
+  }
+  .msg-bubble.ai {
+    background: var(--gray-50); color: var(--gray-900);
+    border: 1px solid var(--gray-100);
+    border-bottom-left-radius: 4px;
+  }
+  .msg-bubble.user {
+    background: var(--green-400); color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-bottom { padding: 10px 16px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    padding: 5px 12px; border-radius: 20px; font-size: 12px;
+    border: 1px solid var(--gray-200); color: var(--gray-600);
+    cursor: pointer; background: #fff; font-family: var(--font-body);
+    transition: all 0.15s;
+  }
+  .chip:hover { background: var(--green-50); color: var(--green-600); border-color: var(--green-100); }
+  .chat-row { display: flex; gap: 8px; }
+  .chat-input {
+    flex: 1; padding: 10px 14px; border-radius: 24px;
+    border: 1px solid var(--gray-200); background: var(--gray-50);
+    font-size: 13px; color: var(--gray-900); font-family: var(--font-body);
+    outline: none; transition: border-color 0.15s;
+  }
+  .chat-input:focus { border-color: var(--green-400); background: #fff; }
+  .chat-send {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--green-400); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s; flex-shrink: 0;
+  }
+  .chat-send:hover { background: var(--green-600); }
+  .chat-send svg { width: 16px; height: 16px; stroke: #fff; fill: none; }
+
+  /* LOADING DOT */
+  .typing span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--gray-600); margin: 0 2px; animation: blink 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,80%,100%{opacity:0.2} 40%{opacity:1} }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .sidebar { display: none; }
+    .main-content { padding: 20px 16px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.5 2 3 7 3 12c0 3 1.5 5.5 4 7l1-3c-1.5-1.2-2.5-3-2.5-4C5.5 8.5 8.5 5 12 5c3.5 0 6.5 3.5 6.5 7 0 1-.5 2.8-2.5 4l1 3c2.5-1.5 4-4 4-7 0-5-3.5-10-9-10zm0 7c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/></svg>
+    </div>
+    <div>
+      <div class="logo-name">HomeGreen</div>
+      <div class="logo-tag">Your home &amp; garden guide</div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="showPage('dashboard',this)">Dashboard</button>
+    <button class="nav-btn" onclick="showPage('garden',this)">Garden</button>
+    <button class="nav-btn" onclick="showPage('home',this)">Home</button>
+    <button class="nav-btn" onclick="showPage('guides',this)">Guides</button>
+  </div>
+</div>
+
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">Main</div>
+    <button class="sidebar-link active" onclick="showPage('dashboard',this,'sidebar')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Overview
+    </button>
+    <button class="sidebar-link" onclick="showPage('garden',this,'sidebar')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22V12M12 12C12 7 8 4 3 4c0 5 3 8 9 8zm0 0c0-5 4-8 9-8-1 5-4 8-9 8"/></svg>
+      Garden
+    </button>
+    <button class="sidebar-link" onclick="showPage('home',this,'sidebar')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+      Home care
+    </button>
+    <button class="sidebar-link" onclick="showPage('guides',this,'sidebar')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      Guides
+    </button>
+    <div class="sidebar-section">Tools</div>
+    <button class="sidebar-link" onclick="focusChat()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      AI assistant
+    </button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- DASHBOARD PAGE -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-header">
+        <div class="page-title">Good morning</div>
+        <div class="page-sub">Here's what needs your attention this week.</div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-label">Tasks due</div><div class="stat-value">3</div></div>
+        <div class="stat-card"><div class="stat-label">Plants to water</div><div class="stat-value green">5</div></div>
+        <div class="stat-card"><div class="stat-label">Guides read</div><div class="stat-value">12</div></div>
+        <div class="stat-card"><div class="stat-label">Season</div><div class="stat-value" style="font-size:18px;padding-top:4px">Summer</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">This week's checklist</div>
+          <div class="badge" id="badge-count">2 of 5 done</div>
+        </div>
+        <div class="check-item"><div class="check-box done" onclick="toggle(this)"></div><div class="check-label done">Water tomato plants</div></div>
+        <div class="check-item"><div class="check-box done" onclick="toggle(this)"></div><div class="check-label done">Check outdoor tap for leaks</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggle(this)"></div><div class="check-label">Trim overgrown hedge</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggle(this)"></div><div class="check-label">Clean kitchen drain filter</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggle(this)"></div><div class="check-label">Fertilise potted plants</div></div>
+      </div>
+
+      <div class="tips-title">Quick tips — click any to ask the AI</div>
+      <div class="tip-grid">
+        <div class="tip-card" onclick="sendQ('How do I water plants correctly in summer heat?')">
+          <div class="tip-icon green"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 2C6 8 4 12 4 15a8 8 0 0016 0c0-3-2-7-8-13z" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Summer watering</div>
+          <div class="tip-desc">Best time is early morning before 8am to reduce evaporation.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('How do I unclog a kitchen drain naturally?')">
+          <div class="tip-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Drain fix</div>
+          <div class="tip-desc">Baking soda + vinegar clears most slow or blocked drains.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('What vegetables should I grow in a kitchen garden?')">
+          <div class="tip-icon green"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 22V12M12 12C12 7 8 4 3 4c0 5 3 8 9 8zm0 0c0-5 4-8 9-8-1 5-4 8-9 8" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Kitchen garden</div>
+          <div class="tip-desc">Mint, coriander, and chilli thrive in small pots on a balcony.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('How do I stop ants from entering my home naturally?')">
+          <div class="tip-icon coral"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Pest control</div>
+          <div class="tip-desc">Seal entry gaps and sprinkle cinnamon at doorways.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GARDEN PAGE -->
+    <div id="page-garden" class="page">
+      <div class="page-header">
+        <div class="page-title">Garden centre</div>
+        <div class="page-sub">Plant care, seasonal planting, and garden guides.</div>
+      </div>
+      <div class="tip-grid">
+        <div class="tip-card" onclick="sendQ('Tell me how to grow tomatoes at home step by step')">
+          <div class="tip-icon green"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="8" stroke="currentColor"/><path d="M12 4C12 4 10 8 12 12" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Tomatoes</div>
+          <div class="tip-desc">Full sun, regular watering, stake when tall. Harvest in 60–80 days.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('How do I grow mint indoors in a pot?')">
+          <div class="tip-icon green"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 22V12M12 12C12 7 8 4 3 4c0 5 3 8 9 8zm0 0c0-5 4-8 9-8-1 5-4 8-9 8" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Mint</div>
+          <div class="tip-desc">Grows fast in pots — keep soil moist and pinch flowers off.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('What are the signs of overwatering a plant?')">
+          <div class="tip-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 2C6 8 4 12 4 15a8 8 0 0016 0c0-3-2-7-8-13z" stroke="currentColor"/><line x1="4" y1="4" x2="20" y2="20" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Overwatering</div>
+          <div class="tip-desc">Yellow leaves and soggy soil at the roots are the main signs.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('How do I make compost at home from kitchen waste?')">
+          <div class="tip-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor"/><path d="M9 12l2 2 4-4" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Composting</div>
+          <div class="tip-desc">Kitchen scraps + dry leaves layered together make great compost.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('What plants grow well in shade?')">
+          <div class="tip-icon green"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="5" stroke="currentColor"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Shade plants</div>
+          <div class="tip-desc">Peace lily, ferns, and pothos all thrive with indirect light.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('How do I get rid of aphids on my plants naturally?')">
+          <div class="tip-icon coral"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Aphids</div>
+          <div class="tip-desc">Spray diluted dish soap + water on leaves. Repeat every 3 days.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="page-home" class="page">
+      <div class="page-header">
+        <div class="page-title">Home care</div>
+        <div class="page-sub">Repairs, cleaning, and seasonal maintenance guides.</div>
+      </div>
+      <div class="tip-grid">
+        <div class="tip-card" onclick="sendQ('How do I fix a dripping tap myself step by step?')">
+          <div class="tip-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Dripping tap</div>
+          <div class="tip-desc">Usually a worn washer — an easy DIY fix that saves water.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('How often should I clean my AC filters and how?')">
+          <div class="tip-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2" stroke="currentColor"/></svg></div>
+          <div class="tip-name">AC filter</div>
+          <div class="tip-desc">Clean every 4–6 weeks in summer for best cooling efficiency.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('How do I remove mold from bathroom walls safely?')">
+          <div class="tip-icon coral"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Mold removal</div>
+          <div class="tip-desc">Vinegar spray + ventilation prevents regrowth after cleaning.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('How do I save electricity at home in summer?')">
+          <div class="tip-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Save energy</div>
+          <div class="tip-desc">Block direct sun on windows to cut your AC load significantly.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('How do I clean a washing machine naturally?')">
+          <div class="tip-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9" stroke="currentColor"/><circle cx="12" cy="12" r="4" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Washing machine</div>
+          <div class="tip-desc">Run an empty hot cycle with vinegar monthly to kill bacteria.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('How do I fix a wall crack at home?')">
+          <div class="tip-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor"/><path d="M9 9l6 6M15 9l-6 6" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Wall cracks</div>
+          <div class="tip-desc">Fill hairline cracks with wall putty, sand smooth, then repaint.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIDES PAGE -->
+    <div id="page-guides" class="page">
+      <div class="page-header">
+        <div class="page-title">Guides library</div>
+        <div class="page-sub">Step-by-step guides for common home and garden tasks.</div>
+      </div>
+      <div class="tip-grid">
+        <div class="tip-card" onclick="sendQ('Give me a complete guide to starting a kitchen garden from scratch')">
+          <div class="tip-icon green"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="currentColor"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Kitchen garden starter</div>
+          <div class="tip-desc">Complete beginner's guide from soil prep to first harvest.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('Give me a seasonal home maintenance checklist for summer')">
+          <div class="tip-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M9 11l3 3L22 4" stroke="currentColor"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Summer checklist</div>
+          <div class="tip-desc">Everything to check, clean, and fix before the hottest months.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('How do I naturally control pests in my garden without chemicals?')">
+          <div class="tip-icon coral"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Natural pest control</div>
+          <div class="tip-desc">Chemical-free methods to protect plants and keep bugs away.</div>
+        </div>
+        <div class="tip-card" onclick="sendQ('Give me a guide to saving water at home and in the garden')">
+          <div class="tip-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 2C6 8 4 12 4 15a8 8 0 0016 0c0-3-2-7-8-13z" stroke="currentColor"/></svg></div>
+          <div class="tip-name">Water saving guide</div>
+          <div class="tip-desc">Simple habits to cut water use indoors and in the garden.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHAT PANEL -->
+<div class="chat-wrap">
+  <div class="chat-head">
+    <div class="chat-dot"></div>
+    <div class="chat-head-title">AI assistant — ask anything about your home or garden</div>
+    <div class="chat-head-sub">Powered by Claude AI</div>
+  </div>
+  <div class="chat-msgs" id="chat-msgs">
+    <div class="msg">
+      <div class="msg-av ai">HG</div>
+      <div class="msg-bubble ai">Hello! I'm your HomeGreen assistant. Ask me anything about plants, home repairs, cleaning, pests, or seasonal care — I'll give you practical, step-by-step answers.</div>
+    </div>
+  </div>
+  <div class="chat-bottom">
+    <div class="chips" id="chips">
+      <div class="chip" onclick="sendQ('My plant leaves are turning yellow, what should I do?')">Yellow leaves</div>
+      <div class="chip" onclick="sendQ('How to fix a leaking tap at home')">Leaking tap</div>
+      <div class="chip" onclick="sendQ('What should I plant in summer?')">Summer planting</div>
+      <div class="chip" onclick="sendQ('How to get rid of cockroaches naturally')">Cockroaches</div>
+      <div class="chip" onclick="sendQ('How do I clean bathroom tiles effectively?')">Bathroom tiles</div>
+    </div>
+    <div class="chat-row">
+      <input class="chat-input" id="chat-input" type="text" placeholder="Ask about your home or garden..." onkeydown="if(event.key==='Enter')sendChat()" />
+      <button class="chat-send" onclick="sendChat()" aria-label="Send">
+        <svg viewBox="0 0 24 24" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SYSTEM = "You are HomeGreen, a friendly and knowledgeable home and garden assistant. You help users with plant care, gardening, home repairs, cleaning, pest control, seasonal maintenance, and DIY tips. Keep answers practical, clear, and concise — 2 to 4 sentences unless a step-by-step guide is requested. You are especially helpful for South Asian and tropical home environments.";
+
+function showPage(id, btn, context) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (context === 'sidebar') {
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    const map = {dashboard:0,garden:1,home:2,guides:3};
+    document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
+  } else {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.sidebar-link').forEach((l,i) => {
+      const map = {dashboard:0,garden:1,home:2,guides:3};
+      l.classList.toggle('active', i === map[id]);
+    });
+  }
+}
+
+function toggle(box) {
+  box.classList.toggle('done');
+  const label = box.nextElementSibling;
+  label.classList.toggle('done');
+  updateBadge();
+}
+
+function updateBadge() {
+  const total = document.querySelectorAll('.check-box').length;
+  const done = document.querySelectorAll('.check-box.done').length;
+  const badge = document.getElementById('badge-count');
+  if (badge) badge.textContent = done + ' of ' + total + ' done';
+}
+
+function focusChat() {
+  document.getElementById('chat-input').focus();
+  document.querySelector('.chat-wrap').scrollIntoView({ behavior: 'smooth' });
+}
+
+function addMsg(text, role) {
+  const box = document.getElementById('chat-msgs');
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'user' ? 'user' : '');
+  const av = document.createElement('div');
+  av.className = 'msg-av ' + role;
+  av.textContent = role === 'user' ? 'You' : 'HG';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble ' + role;
+  bubble.textContent = text;
+  div.appendChild(av);
+  div.appendChild(bubble);
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return bubble;
+}
+
+async function callAI(q) {
+  const bubble = addMsg('', 'ai');
+  bubble.innerHTML = '<span class="typing"><span></span><span></span><span></span></span>';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM,
+        messages: [{ role: 'user', content: q }]
+      })
+    });
+    const data = await res.json();
+    const reply = (data.content || []).map(b => b.text || '').join('') || 'Sorry, I could not get a response. Please try again.';
+    bubble.textContent = reply;
+  } catch(e) {
+    bubble.textContent = 'Connection error. Please check your internet and try again.';
+  }
+  document.getElementById('chat-msgs').scrollTop = 9999;
+}
+
+function sendChat() {
+  const inp = document.getElementById('chat-input');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  document.getElementById('chips').style.display = 'none';
+  addMsg(q, 'user');
+  callAI(q);
+}
+
+function sendQ(q) {
+  document.getElementById('chips').style.display = 'none';
+  addMsg(q, 'user');
+  callAI(q);
+  document.querySelector('.chat-wrap').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
