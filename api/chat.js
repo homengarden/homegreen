@@ -1,4 +1,3 @@
-
 export default async function handler(req, res) {
   // Allow requests from your app
   res.setHeader('Access-Control-Allow-Origin', '*');
